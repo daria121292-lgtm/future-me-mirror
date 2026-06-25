@@ -136,7 +136,7 @@
 
 <div id="screenIndicator"></div>
 
-<button id="calBtn" onclick="toggleCal()">⚙️ Калибровка</button>
+<button id="calBtn" onclick="toggleCal()" style="display:none">⚙️ Калибровка</button>
 
 <div id="cal">
   <h3>🎯 Калибровка</h3>
@@ -505,6 +505,11 @@ iframe.addEventListener('load', () => {
   } catch(e) {}
   setInterval(pollScreen, 200);
 });
+
+// ── показать калибровку только для admin ──────────────────────
+if (new URLSearchParams(window.location.search).get('admin') === '1') {
+  document.getElementById('calBtn').style.display = '';
+}
 
 // ── init ──────────────────────────────────────────────────────
 cal = loadCal();
