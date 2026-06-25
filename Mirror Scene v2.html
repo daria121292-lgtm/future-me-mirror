@@ -281,18 +281,20 @@ const BASE_W = 1512;
 const BASE_H = 982;
 
 function applyMirror() {
-  const isMobile = window.innerWidth < 768;
+  const vw = window.innerWidth;
+  const vh = window.innerHeight;
+  const isMobile = vw <= 900 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   let left, top, width, height;
 
   if (isMobile) {
     // На мобильном — зеркало заполняет весь экран
-    width  = window.innerWidth;
-    height = window.innerHeight;
+    width  = vw;
+    height = vh;
     left   = 0;
     top    = 0;
   } else {
-    const sw = window.innerWidth  / BASE_W;
-    const sh = window.innerHeight / BASE_H;
+    const sw = vw / BASE_W;
+    const sh = vh / BASE_H;
     left   = Math.round(cal.left   * sw);
     top    = Math.round(cal.top    * sh);
     width  = Math.round(cal.width  * sw);
