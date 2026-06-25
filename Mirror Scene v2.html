@@ -287,10 +287,11 @@ function applyMirror() {
   let left, top, width, height;
 
   if (isMobile) {
-    // На мобильном — зеркало заполняет весь экран
-    width  = vw;
+    // На мобильном — масштабируем по высоте чтобы весь контент влез
+    const scale = vh / 1080;
+    width  = Math.round(1080 * scale);
     height = vh;
-    left   = 0;
+    left   = Math.round((vw - width) / 2); // центрируем по горизонтали
     top    = 0;
   } else {
     const sw = vw / BASE_W;
