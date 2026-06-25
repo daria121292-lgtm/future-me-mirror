@@ -443,7 +443,7 @@ function switchVideo(src, timecode = 0) {
   }
   photo.style.opacity = '0';
   const a = activeVid, n = nextVid;
-  n.src = src; n.loop = true; n.muted = true; n.load();
+  n.src = src; n.loop = false; n.muted = true; n.load();
   n.style.opacity = '0';
   applyVideo();
   n.addEventListener('canplay', function onCanPlay() {
@@ -453,7 +453,7 @@ function switchVideo(src, timecode = 0) {
       applyVideo();
       n.style.opacity = '1';
       a.style.opacity = '0';
-      setTimeout(() => { a.pause(); a.src = ''; activeVid = n; nextVid = a; }, 900);
+      setTimeout(() => { a.pause(); a.src = ''; activeVid = n; nextVid = a; if(currentScreen) setupSegmentLoop(currentScreen); }, 900);
     }).catch(e => console.warn('video:', e));
   });
 }
