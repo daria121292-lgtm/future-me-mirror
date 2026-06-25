@@ -117,8 +117,16 @@
 </head>
 <body>
 
-<video id="vid1" autoplay muted loop playsinline></video>
-<video id="vid2" muted loop playsinline></video>
+<video id="vid1" autoplay muted playsinline></video>
+<video id="vid2" muted playsinline></video>
+
+<!-- Tap-to-start overlay для мобильных -->
+<div id="tapOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;cursor:pointer;" onclick="startOnTap()">
+  <div style="width:70px;height:70px;border-radius:50%;border:2px solid rgba(235,197,126,0.8);display:flex;align-items:center;justify-content:center;">
+    <div style="width:0;height:0;border-style:solid;border-width:12px 0 12px 22px;border-color:transparent transparent transparent #EBC57E;margin-left:4px;"></div>
+  </div>
+  <p style="color:#EBC57E;font:300 14px/1.5 system-ui;letter-spacing:.1em;text-transform:uppercase;">Нажми чтобы начать</p>
+</div>
 <img id="bgPhoto" src="" alt="">
 <div id="dimmer"></div>
 
@@ -478,6 +486,8 @@ function onScreenChange(screenId) {
     activeVid.currentTime = tc;
     if (activeVid.paused) activeVid.play().catch(()=>{});
   }
+  // Зацикливаем на отрезке текущего экрана
+  setupSegmentLoop(screenId);
 }
 
 // ── poll iframe ───────────────────────────────────────────────
@@ -502,10 +512,54 @@ syncSliders();
 applyCalibration();
 switchVideo(SCREEN_VIDEOS.s1);
 
+// ── segment looping — каждый экран зациклен на своём отрезке ──
+const SCREEN_KEYS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11'];
+
+function getSegment(screenId) {
+  const idx   = SCREEN_KEYS.indexOf(screenId);
+  const start = SCREEN_TIMECODES[screenId] ?? 0;
+  const next  = SCREEN_KEYS[idx + 1];
+  const end   = next ? (SCREEN_TIMECODES[next] - 0.1) : 9999;
+  return { start, end };
+}
+
+function setupSegmentLoop(screenId) {
+  const { start, end } = getSegment(screenId);
+  const onTime = () => {
+    if (activeVid._loopScreen !== screenId) {
+      activeVid.removeEventListener('timeupdate', onTime);
+      return;
+    }
+    if (activeVid.currentTime >= end) {
+      activeVid.currentTime = start;
+    }
+  };
+  activeVid._loopScreen = screenId;
+  activeVid.removeEventListener('timeupdate', activeVid._loopFn);
+  activeVid._loopFn = onTime;
+  activeVid.addEventListener('timeupdate', onTime);
+}
+
+// ── tap-to-start для iOS/Android ──────────────────────────────
+function startOnTap() {
+  const overlay = document.getElementById('tapOverlay');
+  overlay.style.display = 'none';
+  activeVid.play().catch(()=>{});
+}
+
+// Проверяем нужен ли overlay (мобильные браузеры)
+window.addEventListener('load', () => {
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  if (isMobile) {
+    activeVid.play().catch(() => {
+      document.getElementById('tapOverlay').style.display = 'flex';
+    });
+  }
+});
+
 // Переприменяем при изменении размера окна и повороте телефона
 window.addEventListener('resize', () => applyMirror());
 window.addEventListener('orientationchange', () => setTimeout(applyMirror, 300));
-// iOS Safari финализирует размеры с задержкой — применяем несколько раз
 window.addEventListener('load', () => {
   applyMirror();
   setTimeout(applyMirror, 300);
