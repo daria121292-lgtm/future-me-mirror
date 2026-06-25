@@ -502,10 +502,15 @@ syncSliders();
 applyCalibration();
 switchVideo(SCREEN_VIDEOS.s1);
 
-// Переприменяем при изменении размера окна (resize, поворот телефона)
+// Переприменяем при изменении размера окна и повороте телефона
 window.addEventListener('resize', () => applyMirror());
-// Переприменяем после полной загрузки страницы
-window.addEventListener('load', () => applyMirror());
+window.addEventListener('orientationchange', () => setTimeout(applyMirror, 300));
+// iOS Safari финализирует размеры с задержкой — применяем несколько раз
+window.addEventListener('load', () => {
+  applyMirror();
+  setTimeout(applyMirror, 300);
+  setTimeout(applyMirror, 800);
+});
 </script>
 </body>
 </html>
