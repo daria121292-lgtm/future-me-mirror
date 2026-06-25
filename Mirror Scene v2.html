@@ -230,7 +230,7 @@ let indicatorTimer = null;
 let locked = false;
 
 // ── calibration defaults ──────────────────────────────────────
-const MIRROR_DEFAULTS = { left:390, top:40, width:736, height:843, radius:50, dim:0.35 };
+const MIRROR_DEFAULTS = { left:372, top:30, width:778, height:843, radius:50, dim:0.35 };
 const VIDEO_DEFAULTS  = { vx:0, vy:0, vscale:100 };
 const DEFAULTS = { ...MIRROR_DEFAULTS, ...VIDEO_DEFAULTS };
 
@@ -267,12 +267,22 @@ function loadVideoCal(screenId) {
 }
 
 // ── apply calibration ─────────────────────────────────────────
+// Базовое разрешение на котором делалась калибровка (CSS px)
+const BASE_W = 1512;
+const BASE_H = 982;
+
 function applyMirror() {
-  const scale = cal.width / 1080;
-  clip.style.left         = cal.left   + 'px';
-  clip.style.top          = cal.top    + 'px';
-  clip.style.width        = cal.width  + 'px';
-  clip.style.height       = cal.height + 'px';
+  const sw = window.innerWidth  / BASE_W;
+  const sh = window.innerHeight / BASE_H;
+  const left   = Math.round(cal.left   * sw);
+  const top    = Math.round(cal.top    * sh);
+  const width  = Math.round(cal.width  * sw);
+  const height = Math.round(cal.height * sh);
+  const scale  = width / 1080;
+  clip.style.left         = left   + 'px';
+  clip.style.top          = top    + 'px';
+  clip.style.width        = width  + 'px';
+  clip.style.height       = height + 'px';
   clip.style.borderRadius = cal.radius + 'px';
   iframe.style.transform  = `scale(${scale})`;
   dimmer.style.background = `rgba(0,0,0,${cal.dim})`;
