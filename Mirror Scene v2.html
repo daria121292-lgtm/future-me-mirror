@@ -272,18 +272,30 @@ const BASE_W = 1512;
 const BASE_H = 982;
 
 function applyMirror() {
-  const sw = window.innerWidth  / BASE_W;
-  const sh = window.innerHeight / BASE_H;
-  const left   = Math.round(cal.left   * sw);
-  const top    = Math.round(cal.top    * sh);
-  const width  = Math.round(cal.width  * sw);
-  const height = Math.round(cal.height * sh);
-  const scale  = width / 1080;
+  const isMobile = window.innerWidth < 768;
+  let left, top, width, height;
+
+  if (isMobile) {
+    // На мобильном — зеркало заполняет весь экран
+    width  = window.innerWidth;
+    height = window.innerHeight;
+    left   = 0;
+    top    = 0;
+  } else {
+    const sw = window.innerWidth  / BASE_W;
+    const sh = window.innerHeight / BASE_H;
+    left   = Math.round(cal.left   * sw);
+    top    = Math.round(cal.top    * sh);
+    width  = Math.round(cal.width  * sw);
+    height = Math.round(cal.height * sh);
+  }
+
+  const scale = width / 1080;
   clip.style.left         = left   + 'px';
   clip.style.top          = top    + 'px';
   clip.style.width        = width  + 'px';
   clip.style.height       = height + 'px';
-  clip.style.borderRadius = cal.radius + 'px';
+  clip.style.borderRadius = isMobile ? '0' : cal.radius + 'px';
   iframe.style.transform  = `scale(${scale})`;
   dimmer.style.background = `rgba(0,0,0,${cal.dim})`;
 }
