@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Me</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=Inter:wght@200;300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: oklch(8% 0.008 55);
+  color: oklch(90% 0.01 70);
+  font-family: 'Inter', sans-serif;
+  font-weight: 300;
+  overflow-x: hidden;
+}
+
+/* ═══════════════════════════════════════
+   HERO
+═══════════════════════════════════════ */
+.hero {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* background photo — girl in mirror */
+.hero-bg {
+  position: absolute;
+  inset: 0;
+  background: url('photo-s5.jpg') center center / cover no-repeat;
+  filter: brightness(0.38) saturate(0.8);
+  transform: scale(1.04);
+}
+
+/* dark vignette edges */
+.hero-vignette {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 55% 100% at 50% 50%, transparent 30%, oklch(8% 0.008 55) 100%),
+    linear-gradient(to bottom, oklch(8% 0.008 55) 0%, transparent 18%, transparent 80%, oklch(8% 0.008 55) 100%);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* amber wall glow — bleeds into the beige walls */
+.hero-wall-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 28% 70% at 4% 50%,  oklch(62% 0.12 62 / 0.35) 0%, transparent 70%),
+    radial-gradient(ellipse 28% 70% at 96% 50%, oklch(62% 0.12 62 / 0.35) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: 3;
+  animation: wall-breathe 5s ease-in-out infinite;
+}
+
+@keyframes wall-breathe {
+  0%, 100% { opacity: 0.7; }
+  50%       { opacity: 1; }
+}
+
+/* hero layout */
+.hero-inner {
+  position: relative;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 0;
+}
+
+.hero-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: oklch(72% 0.12 62);
+  margin-bottom: 18px;
+  opacity: 0.8;
+}
+
+.hero-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(56px, 8vw, 108px);
+  font-weight: 300;
+  line-height: 0.95;
+  letter-spacing: -0.01em;
+  color: oklch(93% 0.008 70);
+  margin-bottom: 20px;
+}
+
+.hero-title em {
+  font-style: italic;
+  color: oklch(75% 0.14 62);
+  display: block;
+}
+
+.hero-sub {
+  font-size: 13px;
+  color: oklch(68% 0.008 70);
+  line-height: 1.8;
+  max-width: 340px;
+  margin-bottom: 40px;
+  letter-spacing: 0.03em;
+}
+
+.cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 28px;
+  border: 1px solid oklch(72% 0.12 62 / 0.4);
+  color: oklch(75% 0.14 62);
+  text-decoration: none;
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-family: 'Inter', sans-serif;
+  transition: all 0.4s ease;
+  position: relative;
+  overflow: hidden;
+}
+.cta::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: oklch(72% 0.12 62);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+}
+.cta:hover { color: oklch(12% 0.01 55); }
+.cta:hover::after { transform: scaleX(1); }
+.cta span { position: relative; z-index: 1; }
+
+.hero-scroll {
+  position: absolute;
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  color: oklch(55% 0.01 70);
+  font-size: 9px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+}
+.hero-scroll::after {
+  content: '';
+  width: 1px;
+  height: 44px;
+  background: linear-gradient(to bottom, oklch(60% 0.1 62), transparent);
+  animation: drip 2s ease-in-out infinite;
+}
+@keyframes drip {
+  0%   { opacity: 0; transform: scaleY(0); transform-origin: top; }
+  50%  { opacity: 1; transform: scaleY(1); }
+  100% { opacity: 0; transform: scaleY(1); transform-origin: bottom; }
+}
+
+/* ═══════════════════════════════════════
+   STICKY FEATURES
+═══════════════════════════════════════ */
+.features-wrapper {
+  position: relative;
+}
+
+/* continuous wall background behind the scroll section */
+.features-wall {
+  position: absolute;
+  inset: 0;
+  background: url('photo-s5.jpg') center 40% / cover no-repeat;
+  filter: brightness(0.18) saturate(0.6);
+  pointer-events: none;
+}
+
+/* side glows that stay fixed while scrolling */
+.wall-glow-left,
+.wall-glow-right {
+  position: sticky;
+  top: 0;
+  height: 0;
+  pointer-events: none;
+  z-index: 5;
+}
+.wall-glow-left::after,
+.wall-glow-right::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  width: 280px;
+  height: 100vh;
+  pointer-events: none;
+}
+.wall-glow-left::after {
+  left: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 0% 45%, oklch(62% 0.12 62 / 0.45) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 80% at 10% 50%, oklch(50% 0.1 55 / 0.2) 0%, transparent 70%);
+  animation: glow-pulse 4.5s ease-in-out infinite;
+}
+.wall-glow-right::after {
+  right: 0;
+  background:
+    radial-gradient(ellipse 80% 60% at 100% 45%, oklch(62% 0.12 62 / 0.45) 0%, transparent 65%),
+    radial-gradient(ellipse 50% 80% at 90% 50%, oklch(50% 0.1 55 / 0.2) 0%, transparent 70%);
+  animation: glow-pulse 4.5s ease-in-out infinite 2.25s;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.65; }
+  50%       { opacity: 1; }
+}
+
+.features-grid {
+  position: relative;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr 320px 1fr;
+  min-height: 420vh;
+  padding: 0 60px;
+}
+
+/* sticky center phone */
+.phone-sticky {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.phone-wrap {
+  position: relative;
+}
+
+/* ambient glow behind phone */
+.phone-aura {
+  position: absolute;
+  inset: -60px;
+  background: radial-gradient(ellipse at center, oklch(55% 0.1 62 / 0.3) 0%, transparent 65%);
+  filter: blur(20px);
+  pointer-events: none;
+  animation: aura-pulse 4s ease-in-out infinite;
+}
+@keyframes aura-pulse {
+  0%, 100% { opacity: 0.6; transform: scale(0.95); }
+  50%       { opacity: 1;   transform: scale(1.05); }
+}
+
+.phone {
+  position: relative;
+  width: 260px;
+  height: 540px;
+  background: oklch(9% 0.01 55);
+  border-radius: 40px;
+  border: 1.5px solid oklch(72% 0.12 62 / 0.2);
+  overflow: hidden;
+  box-shadow:
+    0 0 0 1px oklch(5% 0 0 / 0.6),
+    0 30px 80px oklch(5% 0 0 / 0.7),
+    0 0 60px oklch(55% 0.1 62 / 0.15);
+}
+
+/* dynamic LED rim */
+.phone-rim {
+  position: absolute;
+  inset: -1px;
+  border-radius: 41px;
+  z-index: 20;
+  pointer-events: none;
+  padding: 1.5px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: rim-spin 4s linear infinite;
+}
+
+@property --rim-angle {
+  syntax: '<angle>';
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes rim-spin {
+  to { --rim-angle: 360deg; }
+}
+.phone-rim {
+  background: conic-gradient(
+    from var(--rim-angle),
+    transparent 0%,
+    transparent 55%,
+    oklch(80% 0.16 62) 70%,
+    oklch(90% 0.1 75) 75%,
+    oklch(80% 0.16 62) 80%,
+    transparent 90%
+  );
+}
+
+/* notch */
+.phone::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 50%;
+  transform: translateX(-50%);
+  width: 82px; height: 24px;
+  background: oklch(9% 0.01 55);
+  border-radius: 0 0 16px 16px;
+  z-index: 15;
+}
+
+.phone iframe {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: block;
+}
+
+/* ── feature columns ── */
+.col-left,
+.col-right {
+  display: flex;
+  flex-direction: column;
+  padding: 22vh 0;
+  gap: 20vh;
+}
+.col-left  { align-items: flex-end;  text-align: right;  padding-right: 40px; }
+.col-right { align-items: flex-start; text-align: left;   padding-left: 40px; }
+
+.feat {
+  max-width: 230px;
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.9s ease, transform 0.9s ease;
+}
+.feat.in {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.feat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 10px;
+  letter-spacing: 0.35em;
+  text-transform: uppercase;
+  color: oklch(72% 0.12 62);
+  opacity: 0.6;
+  margin-bottom: 8px;
+}
+
+.feat-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 25px;
+  font-weight: 300;
+  line-height: 1.2;
+  color: oklch(91% 0.008 70);
+  margin-bottom: 8px;
+}
+.feat-title em {
+  font-style: italic;
+  color: oklch(75% 0.14 62);
+}
+
+.feat-rule {
+  width: 32px;
+  height: 1px;
+  background: oklch(72% 0.12 62 / 0.35);
+  margin: 10px 0;
+}
+.col-left .feat-rule { margin-left: auto; }
+
+.feat-body {
+  font-size: 12px;
+  line-height: 1.8;
+  color: oklch(62% 0.008 70);
+}
+
+/* ═══════════════════════════════════════
+   TRANSITION BAND — wall fades to black
+═══════════════════════════════════════ */
+.transition-band {
+  height: 220px;
+  background: linear-gradient(to bottom, oklch(8% 0.008 55 / 0) 0%, oklch(8% 0.008 55) 100%);
+  position: relative;
+  z-index: 20;
+  margin-top: -220px;
+  pointer-events: none;
+}
+
+/* ═══════════════════════════════════════
+   CLOSING
+═══════════════════════════════════════ */
+.closing {
+  padding: 120px 80px;
+  text-align: center;
+  position: relative;
+}
+.closing-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 40% 50% at 50% 40%, oklch(52% 0.09 60 / 0.18) 0%, transparent 70%);
+  pointer-events: none;
+}
+.closing-eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: oklch(72% 0.12 62);
+  opacity: 0.65;
+  margin-bottom: 18px;
+}
+.closing-title {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: clamp(44px, 6vw, 82px);
+  font-weight: 300;
+  line-height: 1.08;
+  margin-bottom: 24px;
+}
+.closing-title em {
+  font-style: italic;
+  color: oklch(75% 0.14 62);
+}
+.closing-body {
+  font-size: 13px;
+  color: oklch(60% 0.008 70);
+  max-width: 360px;
+  margin: 0 auto 40px;
+  line-height: 1.85;
+}
+
+/* ═══════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════ */
+footer {
+  border-top: 1px solid oklch(72% 0.12 62 / 0.08);
+  padding: 26px 72px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 11px;
+  color: oklch(50% 0.008 70);
+  letter-spacing: 0.07em;
+}
+.logo {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 17px;
+  font-weight: 300;
+  color: oklch(85% 0.01 70);
+  letter-spacing: 0.12em;
+}
+</style>
+</head>
+<body>
+
+<!-- ── HERO ── -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-vignette"></div>
+  <div class="hero-wall-glow"></div>
+
+  <div class="hero-inner">
+    <p class="hero-eyebrow">AR Fashion Experience</p>
+    <h1 class="hero-title">
+      Meet your
+      <em>future self</em>
+    </h1>
+    <p class="hero-sub">An immersive AR mirror that lets you try on your goals before they happen.</p>
+    <a href="Future Me Mirror v2.html" class="cta" target="_blank">
+      <span>Open Mirror &rarr;</span>
+    </a>
+  </div>
+
+  <div class="hero-scroll">scroll</div>
+</section>
+
+<!-- ── FEATURES ── -->
+<div class="features-wrapper">
+  <div class="features-wall"></div>
+
+  <div class="wall-glow-left"></div>
+  <div class="wall-glow-right"></div>
+
+  <div class="features-grid">
+
+    <!-- LEFT -->
+    <div class="col-left">
+      <div class="feat">
+        <p class="feat-num">01</p>
+        <h3 class="feat-title">Visualise your<br><em>goals</em></h3>
+        <div class="feat-rule"></div>
+        <p class="feat-body">Set your body goals and see a realistic projection of where you're heading. Motivation made visible.</p>
+      </div>
+      <div class="feat">
+        <p class="feat-num">03</p>
+        <h3 class="feat-title">AR <em>try-on</em><br>catalogue</h3>
+        <div class="feat-rule"></div>
+        <p class="feat-body">Browse curated collections and see every piece on your future self before you buy.</p>
+      </div>
+      <div class="feat">
+        <p class="feat-num">05</p>
+        <h3 class="feat-title">Personal<br><em>timeline</em></h3>
+        <div class="feat-rule"></div>
+        <p class="feat-body">A living record of your transformation. Every step, every milestone, made visible.</p>
+      </div>
+    </div>
+
+    <!-- CENTER sticky phone -->
+    <div class="phone-sticky">
+      <div class="phone-wrap">
+        <div class="phone-aura"></div>
+        <div class="phone">
+          <div class="phone-rim"></div>
+          <iframe src="Future Me Mirror v2.html" title="Future Me Mirror" loading="lazy"></iframe>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT -->
+    <div class="col-right">
+      <div class="feat">
+        <p class="feat-num">02</p>
+        <h3 class="feat-title">Track your<br><em>progress</em></h3>
+        <div class="feat-rule"></div>
+        <p class="feat-body">Watch your body evolve week by week. Subtle shifts become undeniable proof of your commitment.</p>
+      </div>
+      <div class="feat">
+        <p class="feat-num">04</p>
+        <h3 class="feat-title">Personalised<br><em>nutrition</em></h3>
+        <div class="feat-rule"></div>
+        <p class="feat-body">Tailored meal plans aligned with your transformation goals. Science-backed, beautifully simple.</p>
+      </div>
+      <div class="feat">
+        <p class="feat-num">06</p>
+        <h3 class="feat-title">Style for<br><em>who you'll be</em></h3>
+        <div class="feat-rule"></div>
+        <p class="feat-body">As you change, your wardrobe evolves with you. Discover looks curated for the body you're building.</p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- smooth transition from wall photo to dark -->
+<div class="transition-band"></div>
+
+<!-- ── CLOSING ── -->
+<section class="closing">
+  <div class="closing-glow"></div>
+  <p class="closing-eyebrow">Begin your journey</p>
+  <h2 class="closing-title">
+    The mirror<br>
+    doesn't lie —<br>
+    it <em>inspires</em>
+  </h2>
+  <p class="closing-body">Step into the experience. See the version of yourself that's already waiting.</p>
+  <a href="Future Me Mirror v2.html" class="cta" target="_blank"><span>Enter the Mirror &rarr;</span></a>
+</section>
+
+<footer>
+  <span class="logo">Future Me</span>
+  <span>AR Fashion &middot; Body Goals &middot; Personal Style</span>
+  <span>&copy; 2026</span>
+</footer>
+
+<script>
+  const feats = document.querySelectorAll('.feat');
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); });
+  }, { threshold: 0.18 });
+  feats.forEach(f => io.observe(f));
+</script>
+</body>
+</html>

@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Future Me · Mirror Scene</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html, body { width:100%; height:100%; background:#000; overflow:hidden; }
+
+  /* ── background videos ── */
+  #vid1, #vid2 {
+    position:fixed;
+    left:0; top:0; width:100%; height:100%;
+    object-fit:cover;
+    transition: opacity 0.8s ease;
+    z-index:1;
+  }
+  #vid2 { opacity:0; }
+
+  /* ── background photo ── */
+  #bgPhoto {
+    position:fixed; inset:0; width:100%; height:100%;
+    object-fit:cover;
+    opacity:0;
+    transition: opacity 0.8s ease;
+    z-index:2;
+  }
+
+  /* ── dim overlay ── */
+  #dimmer {
+    position:fixed; inset:0;
+    background:rgba(0,0,0,0.35);
+    z-index:3;
+    pointer-events:none;
+  }
+
+  /* ── mirror clip (iframe container) ── */
+  #mirrorClip {
+    position:fixed;
+    z-index:10;
+    overflow:hidden;
+    mix-blend-mode: screen;
+    transition: left 0.4s ease, top 0.4s ease, width 0.4s ease, height 0.4s ease, border-radius 0.4s ease;
+  }
+  #mirrorClip iframe {
+    border:none;
+    width:1080px;
+    height:1080px;
+    transform-origin: top left;
+    pointer-events:all;
+  }
+
+  /* ── calibration button ── */
+  #calBtn {
+    position:fixed; top:16px; right:16px; z-index:9999;
+    background:rgba(235,197,126,0.15); border:1px solid rgba(235,197,126,0.5);
+    color:#EBC57E; font:13px system-ui; padding:8px 14px; border-radius:8px;
+    cursor:pointer; backdrop-filter:blur(6px);
+  }
+  #calBtn:hover { background:rgba(235,197,126,0.3); }
+
+  /* ── calibration panel ── */
+  #cal {
+    display:none;
+    position:fixed;
+    bottom:24px; right:24px;
+    background:rgba(0,0,0,0.92);
+    border:1px solid rgba(235,197,126,0.4);
+    border-radius:12px;
+    padding:18px 20px;
+    z-index:9998;
+    color:#EBC57E;
+    font:13px/1.5 system-ui,sans-serif;
+    width:310px;
+    max-height:92vh;
+    overflow-y:auto;
+  }
+  #cal.open { display:block; }
+  #cal h3 { font-size:14px; letter-spacing:.05em; margin-bottom:2px; }
+  #cal .section-title {
+    font-size:10px; letter-spacing:.1em; text-transform:uppercase;
+    color:rgba(235,197,126,0.5); margin:12px 0 6px;
+    border-top:1px solid rgba(235,197,126,0.15); padding-top:10px;
+  }
+  #calScreenName { font-size:11px; color:rgba(235,197,126,0.6); margin-bottom:4px; }
+  #videoInfo { font-size:11px; color:rgba(235,197,126,0.4); margin-bottom:10px; }
+  #cal label { display:flex; justify-content:space-between; align-items:center; margin-bottom:7px; font-size:12px; }
+  #cal input[type=range] { width:145px; accent-color:#EBC57E; }
+  #cal .val { width:42px; text-align:right; font-size:11px; }
+  #cal .btn-row { display:flex; gap:8px; margin-top:10px; }
+  #cal button {
+    flex:1; padding:7px; background:#EBC57E; color:#000;
+    border:none; border-radius:7px; font-size:12px; font-weight:600; cursor:pointer;
+  }
+  #cal button.sec {
+    background:rgba(235,197,126,0.12); color:#EBC57E;
+    border:1px solid rgba(235,197,126,0.35);
+  }
+  #cal button:hover { opacity:0.85; }
+
+  /* ── screen indicator ── */
+  #screenIndicator {
+    position:fixed; top:16px; left:50%; transform:translateX(-50%);
+    background:rgba(0,0,0,0.65); border:1px solid rgba(235,197,126,0.35);
+    color:#EBC57E; font:12px system-ui; padding:6px 16px; border-radius:20px;
+    z-index:9999; pointer-events:none;
+    opacity:0; transition:opacity 0.3s;
+  }
+  #screenIndicator.show { opacity:1; }
+
+  #hint {
+    position:fixed; bottom:10px; left:50%; transform:translateX(-50%);
+    color:rgba(255,255,255,0.2); font:12px system-ui; z-index:20;
+    pointer-events:none;
+  }
+</style>
+</head>
+<body>
+
+<video id="vid1" autoplay muted loop playsinline></video>
+<video id="vid2" muted loop playsinline></video>
+<img id="bgPhoto" src="" alt="">
+<div id="dimmer"></div>
+
+<div id="mirrorClip">
+  <iframe id="app" src="Future Me Mirror v2.html" allowfullscreen allowtransparency="true" style="background:transparent;"></iframe>
+</div>
+
+<div id="screenIndicator"></div>
+
+<button id="calBtn" onclick="toggleCal()">⚙️ Калибровка</button>
+
+<div id="cal">
+  <h3>🎯 Калибровка</h3>
+  <div id="calScreenName">Экран: —</div>
+  <div id="videoInfo">Видео: —</div>
+
+  <!-- MIRROR position & size -->
+  <div class="section-title">🪞 Зеркало (позиция)</div>
+  <label>Лево   <input type="range" id="cLeft"   min="-500" max="1500" step="1"> <span class="val" id="vLeft">0</span></label>
+  <label>Верх   <input type="range" id="cTop"    min="-500" max="1500" step="1"> <span class="val" id="vTop">0</span></label>
+  <label>Ширина <input type="range" id="cWidth"  min="100"  max="1400" step="1"> <span class="val" id="vWidth">480</span></label>
+  <label>Высота <input type="range" id="cHeight" min="100"  max="1400" step="1"> <span class="val" id="vHeight">850</span></label>
+  <label>Радиус <input type="range" id="cRadius" min="0"    max="700"  step="1"> <span class="val" id="vRadius">50</span>px</label>
+  <label>Затемн <input type="range" id="cDim"    min="0"    max="0.9"  step="0.01"> <span class="val" id="vDim">0.35</span></label>
+
+  <!-- VIDEO -->
+  <div class="section-title">🎬 Видео</div>
+  <label>Масштаб <input type="range" id="cVScale" min="80" max="200" step="1"> <span class="val" id="vVScale">100</span>%</label>
+  <label>Сдвиг X  <input type="range" id="cVX"    min="-50" max="50" step="0.5"> <span class="val" id="vVX">0</span>%</label>
+  <label>Сдвиг Y  <input type="range" id="cVY"    min="-50" max="50" step="0.5"> <span class="val" id="vVY">0</span>%</label>
+
+  <div class="btn-row">
+    <button id="lockBtn" class="sec" onclick="toggleLock()" style="flex:none;width:100%;margin-bottom:2px;">🔓 Заморозить экран</button>
+  </div>
+  <div class="btn-row">
+    <button onclick="saveCurrentScreen()">💾 Сохранить</button>
+    <button onclick="applyToAll()">✅ Применить на все</button>
+  </div>
+  <div class="btn-row">
+    <button class="sec" onclick="copyToAll()">📋 Копия на все</button>
+  </div>
+  <div class="btn-row">
+    <button class="sec" onclick="resetCurrentScreen()">↩ Сброс</button>
+    <button class="sec" onclick="exportAllCal()">📤 Экспорт</button>
+  </div>
+</div>
+
+<div id="hint">⚙️ Калибровка — правый верхний угол</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  ПОРЯДОК ВИДЕО ПО ЭКРАНАМ
+//  Экраны идут в том порядке, в котором пользователь проходит
+//  через зеркало: s1 → s2 → s3 → ... → s11
+//
+//  Чтобы поменять видео — просто замени название файла справа.
+//  Чтобы поменять порядок — поменяй строки местами.
+//  Когда добавишь новое видео — замени 'video-s7.mp4' (заглушку)
+//  на реальный файл, например 'video-s8.mp4'
+// ══════════════════════════════════════════════════════════════
+const SCREEN_VIDEOS = {
+  s1:  'mirror-final.mp4',
+  s2:  'mirror-final.mp4',
+  s3:  'mirror-final.mp4',
+  s4:  'mirror-final.mp4',
+  s5:  'mirror-final.mp4',
+  s6:  'mirror-final.mp4',
+  s7:  'mirror-final.mp4',
+  s8:  'mirror-final.mp4',
+  s9:  'mirror-final.mp4',
+  s10: 'mirror-final.mp4',
+  s11: 'mirror-final.mp4',
+};
+
+// Таймкоды: в какую секунду перематывать при входе на экран
+const SCREEN_TIMECODES = {
+  s1:  0,
+  s2:  7,
+  s3:  10,
+  s4:  14,
+  s5:  21,
+  s6:  25,
+  s7:  29,
+  s8:  34,
+  s9:  38,
+  s10: 43,
+  s11: 45,
+};
+
+const SCREEN_LABELS = {
+  s1:'S1 Сканирование', s2:'S2 Цель', s3:'S3 Timeline',
+  s4:'S4 Параметры', s5:'S5 Фото', s6:'S6 Замеры',
+  s7:'S7 Будущее Я', s8:'S8 Каталог', s9:'S9 Примерка',
+  s10:'S10 Приветствие', s11:'S11 Дашборд',
+};
+
+// ── elements ──────────────────────────────────────────────────
+const clip      = document.getElementById('mirrorClip');
+const iframe    = document.getElementById('app');
+const vid1      = document.getElementById('vid1');
+const vid2      = document.getElementById('vid2');
+const photo     = document.getElementById('bgPhoto');
+const dimmer    = document.getElementById('dimmer');
+const indicator = document.getElementById('screenIndicator');
+
+let activeVid = vid1, nextVid = vid2;
+let currentScreen = null;
+let indicatorTimer = null;
+let locked = false;
+
+// ── calibration defaults ──────────────────────────────────────
+const MIRROR_DEFAULTS = { left:300, top:50, width:480, height:850, radius:50, dim:0.35 };
+const VIDEO_DEFAULTS  = { vx:0, vy:0, vscale:100 };
+const DEFAULTS = { ...MIRROR_DEFAULTS, ...VIDEO_DEFAULTS };
+
+let cal = { ...DEFAULTS };
+
+// Зеркало — глобальное, видео — своё для каждого экрана
+function loadCal() {
+  try {
+    const m = JSON.parse(localStorage.getItem('mirrorCal'));
+    const v = JSON.parse(localStorage.getItem('videoCal_' + (currentScreen||'s1')));
+    return { ...DEFAULTS, ...(m||{}), ...(v||{}) };
+  } catch(e) {}
+  return { ...DEFAULTS };
+}
+
+function saveCal() {
+  // зеркало — глобально
+  const mirror = {};
+  for (const k of Object.keys(MIRROR_DEFAULTS)) mirror[k] = cal[k];
+  localStorage.setItem('mirrorCal', JSON.stringify(mirror));
+
+  // видео — по экрану
+  const video = {};
+  for (const k of Object.keys(VIDEO_DEFAULTS)) video[k] = cal[k];
+  localStorage.setItem('videoCal_' + currentScreen, JSON.stringify(video));
+}
+
+function loadVideoCal(screenId) {
+  try {
+    const v = JSON.parse(localStorage.getItem('videoCal_' + screenId));
+    if (v) return { ...VIDEO_DEFAULTS, ...v };
+  } catch(e) {}
+  return { ...VIDEO_DEFAULTS };
+}
+
+// ── apply calibration ─────────────────────────────────────────
+function applyMirror() {
+  const scale = cal.width / 1080;
+  clip.style.left         = cal.left   + 'px';
+  clip.style.top          = cal.top    + 'px';
+  clip.style.width        = cal.width  + 'px';
+  clip.style.height       = cal.height + 'px';
+  clip.style.borderRadius = cal.radius + 'px';
+  iframe.style.transform  = `scale(${scale})`;
+  dimmer.style.background = `rgba(0,0,0,${cal.dim})`;
+}
+
+function applyVideo() {
+  const s = (cal.vscale || 100) / 100;
+  const ox = (-(s-1)/2*100) + '%';
+  const oy = (-(s-1)/2*100) + '%';
+  const pw = (s*100) + '%';
+  const ph = (s*100) + '%';
+  const px = (50 + (cal.vx||0)) + '% ' + (50 + (cal.vy||0)) + '%';
+  [vid1, vid2].forEach(v => {
+    v.style.left = ox; v.style.top = oy;
+    v.style.width = pw; v.style.height = ph;
+    v.style.objectPosition = px;
+  });
+}
+
+function applyCalibration() {
+  applyMirror();
+  applyVideo();
+}
+
+// ── sliders ───────────────────────────────────────────────────
+function syncSliders() {
+  const map = {
+    cLeft:'left', cTop:'top', cWidth:'width', cHeight:'height',
+    cRadius:'radius', cDim:'dim',
+    cVScale:'vscale', cVX:'vx', cVY:'vy'
+  };
+  for (const [id, key] of Object.entries(map)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    el.value = cal[key] ?? DEFAULTS[key];
+    document.getElementById('v' + id.slice(1)).textContent = el.value;
+    el.oninput = () => {
+      cal[key] = parseFloat(el.value);
+      document.getElementById('v' + id.slice(1)).textContent = el.value;
+      applyCalibration();
+    };
+  }
+}
+
+function syncVideoSliders() {
+  const map = { cVScale:'vscale', cVX:'vx', cVY:'vy' };
+  for (const [id, key] of Object.entries(map)) {
+    const el = document.getElementById(id);
+    if (!el) continue;
+    el.value = cal[key] ?? VIDEO_DEFAULTS[key];
+    document.getElementById('v' + id.slice(1)).textContent = el.value;
+  }
+}
+
+function updateCalPanel() {
+  document.getElementById('calScreenName').textContent =
+    'Экран: ' + (SCREEN_LABELS[currentScreen] || currentScreen || '—');
+  document.getElementById('videoInfo').textContent =
+    'Видео: ' + (SCREEN_VIDEOS[currentScreen] || '—');
+}
+
+// ── save / reset / copy ───────────────────────────────────────
+function saveCurrentScreen() {
+  saveCal();
+  const btn = document.querySelector('#cal .btn-row button');
+  const orig = btn.textContent;
+  btn.textContent = '✓ Сохранено!';
+  setTimeout(() => btn.textContent = orig, 1500);
+}
+
+function resetCurrentScreen() {
+  if (!confirm('Сбросить калибровку?')) return;
+  localStorage.removeItem('mirrorCal');
+  cal = { ...DEFAULTS };
+  syncSliders();
+  applyCalibration();
+}
+
+function applyToAll() {
+  saveCal();
+  const btn = event.target;
+  const orig = btn.textContent;
+  btn.textContent = '✓ Применено!';
+  setTimeout(() => btn.textContent = orig, 1500);
+}
+
+function copyToAll() {
+  saveCal();
+  alert('Сохранено для всех экранов ✓');
+}
+
+function exportAllCal() {
+  const all = { global: cal };
+  const blob = new Blob([JSON.stringify(all, null, 2)], {type:'application/json'});
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'mirror-calibration.json';
+  a.click();
+}
+
+function toggleCal() {
+  document.getElementById('cal').classList.toggle('open');
+}
+
+function toggleLock() {
+  locked = !locked;
+  const btn = document.getElementById('lockBtn');
+  if (locked) {
+    btn.textContent = '🔒 Заморожено — ' + (SCREEN_LABELS[currentScreen] || currentScreen);
+    btn.style.background = 'rgba(235,197,126,0.25)';
+    btn.style.borderColor = 'rgba(235,197,126,0.8)';
+  } else {
+    btn.textContent = '🔓 Заморозить экран';
+    btn.style.background = '';
+    btn.style.borderColor = '';
+  }
+}
+
+// ── screen indicator ──────────────────────────────────────────
+function showIndicator(id) {
+  indicator.textContent = SCREEN_LABELS[id] || id;
+  indicator.classList.add('show');
+  clearTimeout(indicatorTimer);
+  indicatorTimer = setTimeout(() => indicator.classList.remove('show'), 2000);
+}
+
+// ── video switching ───────────────────────────────────────────
+function switchVideo(src, timecode = 0) {
+  if (!src || src.startsWith('photo:')) {
+    if (src && src.startsWith('photo:')) {
+      photo.src = src.slice(6);
+      photo.style.opacity = '1';
+      activeVid.style.opacity = '0';
+      nextVid.style.opacity = '0';
+    }
+    return;
+  }
+  photo.style.opacity = '0';
+  const a = activeVid, n = nextVid;
+  n.src = src; n.loop = true; n.muted = true; n.load();
+  n.style.opacity = '0';
+  applyVideo();
+  n.addEventListener('canplay', function onCanPlay() {
+    n.removeEventListener('canplay', onCanPlay);
+    n.currentTime = timecode;
+    n.play().then(() => {
+      applyVideo();
+      n.style.opacity = '1';
+      a.style.opacity = '0';
+      setTimeout(() => { a.pause(); a.src = ''; activeVid = n; nextVid = a; }, 900);
+    }).catch(e => console.warn('video:', e));
+  });
+}
+
+// ── screen change ─────────────────────────────────────────────
+let lastSrc = null;
+
+function onScreenChange(screenId) {
+  if (screenId === currentScreen) return;
+  if (locked) return;   // 🔒 заморожено — не переключаем
+  currentScreen = screenId;
+
+  // подгружаем видео-калибровку для этого экрана
+  const vc = loadVideoCal(screenId);
+  cal.vx = vc.vx; cal.vy = vc.vy; cal.vscale = vc.vscale;
+  syncVideoSliders();
+  applyVideo();
+
+  updateCalPanel();
+  showIndicator(screenId);
+
+  const src = SCREEN_VIDEOS[screenId];
+  const tc  = SCREEN_TIMECODES[screenId] ?? 0;
+
+  if (src && src !== lastSrc) {
+    // первый раз — загружаем видео
+    lastSrc = src;
+    switchVideo(src, tc);
+  } else if (src) {
+    // то же видео — перематываем и убеждаемся что играет
+    activeVid.currentTime = tc;
+    if (activeVid.paused) activeVid.play().catch(()=>{});
+  }
+}
+
+// ── poll iframe ───────────────────────────────────────────────
+function pollScreen() {
+  try {
+    const doc = iframe.contentDocument || iframe.contentWindow.document;
+    const active = doc.querySelector('.screen.active');
+    if (active) onScreenChange(active.id);
+  } catch(e) {}
+}
+
+iframe.addEventListener('load', () => {
+  try {
+    (iframe.contentDocument || iframe.contentWindow.document).body.classList.add('embed');
+  } catch(e) {}
+  setInterval(pollScreen, 200);
+});
+
+// ── init ──────────────────────────────────────────────────────
+cal = loadCal();
+syncSliders();
+applyCalibration();
+switchVideo(SCREEN_VIDEOS.s1);
+</script>
+</body>
+</html>

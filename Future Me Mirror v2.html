@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Future Me · Smart Mirror</title>
+<link rel="stylesheet" href="mirror2.css?v=24">
+</head>
+<body>
+<template id="__bundler_thumbnail">
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#000"/><circle cx="50" cy="46" r="22" fill="none" stroke="#E0B36E" stroke-width="1.4" opacity="0.7"/><circle cx="50" cy="46" r="15" fill="none" stroke="#F5D9A0" stroke-width="1" stroke-dasharray="1 4"/><text x="50" y="84" font-family="Helvetica" font-size="9" letter-spacing="2" fill="#E0B36E" text-anchor="middle">FUTURE ME</text></svg>
+</template>
+
+<div class="stage">
+<div class="mirror">
+  <canvas id="sparkles"></canvas>
+  <canvas id="transDust"></canvas>
+
+  <!-- ============ S1 · PARTICLE SCAN ============ -->
+  <div class="screen active" id="s1" data-screen-label="S1 Scan">
+    <div class="topbar"><span class="tb-title">Future Me</span></div>
+    <div class="scan-wrap">
+      <canvas id="scanField"></canvas>
+      <span class="scan-hi">Hi</span>
+    </div>
+  </div>
+
+  <!-- ============ S2 · GOAL (1/3) ============ -->
+  <div class="screen" id="s2" data-screen-label="S2 Goal">
+    <div class="topbar">
+      <div class="tb-back" onclick="go('s1')"><img class="tb-ic" src="assets/arrow-left.svg" alt=""></div>
+      <span class="tb-title">Step 1 / 3</span>
+    </div>
+    <div class="zone rise">
+      <div class="eyebrow">Your goal</div>
+      <h1 class="headline">What's your<br>main goal?</h1>
+      <div class="list gap-l" style="margin-top:16px;">
+        <div class="list-item" onclick="go('s3')">
+          <div class="li-main"><span class="li-text">Lose weight</span><span class="li-sub">Slim down, feel lighter</span></div>
+          <svg class="li-arrow" width="62" height="62" viewBox="0 0 52 52" fill="#EBC57E" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12.7511" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 12.7511 25.998)"/><ellipse cx="4.64796" cy="26.0722" rx="2.6933" ry="2.64886" transform="rotate(90 4.64796 26.0722)"/><ellipse cx="28.6912" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 28.6912 25.998)"/><ellipse cx="36.6605" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 36.6605 25.998)"/><ellipse cx="20.7199" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 20.7199 25.998)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 48.2535 22.1895)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 38.8713 20.2695)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 33.2358 14.5371)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 27.6002 8.80859)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 36.9843 33.6504)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 42.6199 27.9199)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 31.3467 39.3809)"/></svg>
+        </div>
+        <div class="list-item" onclick="go('s3')">
+          <div class="li-main"><span class="li-text">Build strength</span><span class="li-sub">Tone &amp; define muscle</span></div>
+          <svg class="li-arrow" width="62" height="62" viewBox="0 0 52 52" fill="#EBC57E" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12.7511" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 12.7511 25.998)"/><ellipse cx="4.64796" cy="26.0722" rx="2.6933" ry="2.64886" transform="rotate(90 4.64796 26.0722)"/><ellipse cx="28.6912" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 28.6912 25.998)"/><ellipse cx="36.6605" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 36.6605 25.998)"/><ellipse cx="20.7199" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 20.7199 25.998)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 48.2535 22.1895)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 38.8713 20.2695)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 33.2358 14.5371)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 27.6002 8.80859)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 36.9843 33.6504)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 42.6199 27.9199)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 31.3467 39.3809)"/></svg>
+        </div>
+        <div class="list-item" onclick="go('s3')">
+          <div class="li-main"><span class="li-text">Feel confident</span><span class="li-sub">Love what you see</span></div>
+          <svg class="li-arrow" width="62" height="62" viewBox="0 0 52 52" fill="#EBC57E" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12.7511" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 12.7511 25.998)"/><ellipse cx="4.64796" cy="26.0722" rx="2.6933" ry="2.64886" transform="rotate(90 4.64796 26.0722)"/><ellipse cx="28.6912" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 28.6912 25.998)"/><ellipse cx="36.6605" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 36.6605 25.998)"/><ellipse cx="20.7199" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 20.7199 25.998)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 48.2535 22.1895)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 38.8713 20.2695)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 33.2358 14.5371)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 27.6002 8.80859)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 36.9843 33.6504)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 42.6199 27.9199)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 31.3467 39.3809)"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ S3 · TIMELINE (2/3) ============ -->
+  <div class="screen" id="s3" data-screen-label="S3 Timeline">
+    <div class="topbar">
+      <div class="tb-back" onclick="go('s2')"><img class="tb-ic" src="assets/arrow-left.svg" alt=""></div>
+      <span class="tb-title">Step 2 / 3</span>
+    </div>
+    <div class="zone rise">
+      <div class="eyebrow">Timeline</div>
+      <h1 class="headline">When do you<br>want to be there?</h1>
+      <div class="list gap-l" style="margin-top:16px;">
+        <div class="list-item" onclick="go('s4')">
+          <div class="li-main"><span class="li-text">1 month</span><span class="li-sub">Fast track</span></div>
+          <svg class="li-arrow" width="62" height="62" viewBox="0 0 52 52" fill="#EBC57E" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12.7511" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 12.7511 25.998)"/><ellipse cx="4.64796" cy="26.0722" rx="2.6933" ry="2.64886" transform="rotate(90 4.64796 26.0722)"/><ellipse cx="28.6912" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 28.6912 25.998)"/><ellipse cx="36.6605" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 36.6605 25.998)"/><ellipse cx="20.7199" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 20.7199 25.998)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 48.2535 22.1895)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 38.8713 20.2695)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 33.2358 14.5371)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 27.6002 8.80859)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 36.9843 33.6504)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 42.6199 27.9199)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 31.3467 39.3809)"/></svg>
+        </div>
+        <div class="list-item" onclick="go('s4')">
+          <div class="li-main"><span class="li-text">3 months</span><span class="li-sub">Steady pace</span></div>
+          <svg class="li-arrow" width="62" height="62" viewBox="0 0 52 52" fill="#EBC57E" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12.7511" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 12.7511 25.998)"/><ellipse cx="4.64796" cy="26.0722" rx="2.6933" ry="2.64886" transform="rotate(90 4.64796 26.0722)"/><ellipse cx="28.6912" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 28.6912 25.998)"/><ellipse cx="36.6605" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 36.6605 25.998)"/><ellipse cx="20.7199" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 20.7199 25.998)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 48.2535 22.1895)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 38.8713 20.2695)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 33.2358 14.5371)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 27.6002 8.80859)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 36.9843 33.6504)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 42.6199 27.9199)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 31.3467 39.3809)"/></svg>
+        </div>
+        <div class="list-item" onclick="go('s4')">
+          <div class="li-main"><span class="li-text">6 months</span><span class="li-sub">Sustainable</span></div>
+          <svg class="li-arrow" width="62" height="62" viewBox="0 0 52 52" fill="#EBC57E" xmlns="http://www.w3.org/2000/svg"><ellipse cx="12.7511" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 12.7511 25.998)"/><ellipse cx="4.64796" cy="26.0722" rx="2.6933" ry="2.64886" transform="rotate(90 4.64796 26.0722)"/><ellipse cx="28.6912" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 28.6912 25.998)"/><ellipse cx="36.6605" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 36.6605 25.998)"/><ellipse cx="20.7199" cy="25.998" rx="2.6933" ry="2.64886" transform="rotate(90 20.7199 25.998)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 48.2535 22.1895)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 38.8713 20.2695)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 33.2358 14.5371)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 -0.712965 0.7012 0.712965 27.6002 8.80859)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 36.9843 33.6504)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 42.6199 27.9199)"/><circle cx="2.67117" cy="2.67117" r="2.67117" transform="matrix(0.7012 0.712965 -0.7012 0.712965 31.3467 39.3809)"/></svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ S4 · TARGET / PICKER (3/3) ============ -->
+  <div class="screen" id="s4" data-screen-label="S4 Target">
+    <div class="topbar">
+      <div class="tb-back" onclick="go('s3')"><img class="tb-ic" src="assets/arrow-left.svg" alt=""></div>
+      <span class="tb-title">Step 3 / 3</span>
+    </div>
+    <div class="zone rise">
+      <div class="eyebrow">Target</div>
+      <h1 class="headline">How much would<br>you like to lose?</h1>
+      <div class="picker gap-m" id="kgPicker">
+        <div class="drum" id="kgDrum"></div>
+        <div class="pick-rails"></div>
+      </div>
+      <div class="gap-m" style="margin-top:16px;">
+        <button class="m-btn" onclick="btnGo(this,'s5')">
+          <span class="m-handle"><img class="m-arrow" src="assets/arrow-right.svg" alt=""></span>
+          <span class="m-label">Continue</span>
+          <span class="m-chev"><span>›</span><span>›</span><span>›</span></span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ S5 · BASE SNAP ============ -->
+  <div class="screen" id="s5" data-screen-label="S5 Base Snap">
+    <img class="figure" src="assets/body3d.png" alt="" style="height:1940px;bottom:48px">
+    <div class="snap-frame"><div class="scanline"></div></div>
+    <div class="topbar">
+      <div class="tb-back" onclick="go('s4')"><img class="tb-ic" src="assets/arrow-left.svg" alt=""></div>
+      <span class="tb-title">Base Snap · Day 1</span>
+    </div>
+    <div class="zone rise zone-top">
+      <div class="eyebrow">Capturing your start</div>
+      <h1 class="headline">Stand straight,<br>arms at your sides</h1>
+      <div class="poses gap-l">
+        <div class="pose">Pose <svg class="ck" width="30" height="22" viewBox="0 0 28 21" fill="#EBC57E" xmlns="http://www.w3.org/2000/svg"><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 8.95459 21.002)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 5.59268 17.6836)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 2.23419 14.3652)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 15.6784 14.3652)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 25.7658 4.41016)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 12.3165 17.6836)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 22.4039 7.72656)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 19.0403 11.0508)"/></svg></div>
+        <div class="pose">Distance <svg class="ck" width="30" height="22" viewBox="0 0 28 21" fill="#EBC57E" xmlns="http://www.w3.org/2000/svg"><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 8.95459 21.002)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 5.59268 17.6836)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 2.23419 14.3652)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 15.6784 14.3652)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 25.7658 4.41016)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 12.3165 17.6836)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 22.4039 7.72656)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 19.0403 11.0508)"/></svg></div>
+        <div class="pose">Lighting <svg class="ck" width="30" height="22" viewBox="0 0 28 21" fill="#EBC57E" xmlns="http://www.w3.org/2000/svg"><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 8.95459 21.002)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 5.59268 17.6836)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 2.23419 14.3652)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 15.6784 14.3652)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 25.7658 4.41016)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 12.3165 17.6836)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 22.4039 7.72656)"/><circle cx="1.56952" cy="1.56952" r="1.56952" transform="matrix(-0.711747 -0.702435 0.711747 -0.702435 19.0403 11.0508)"/></svg></div>
+      </div>
+    </div>
+    
+  </div>
+
+  <!-- ============ S6 · MEASUREMENTS ============ -->
+  <div class="screen" id="s6" data-screen-label="S6 Measurements">
+    <div class="topbar">
+      <div class="tb-back" onclick="go('s5')"><img class="tb-ic" src="assets/arrow-left.svg" alt=""></div>
+      <span class="tb-title">Your Body · Day 1</span>
+    </div>
+    <div class="zone">
+      <div class="eyebrow">Your starting point</div>
+      <h1 class="headline">Your measurements,<br>captured</h1>
+    </div>
+
+    <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:7">
+      <button class="m-btn" onclick="btnGo(this,'s7')">
+        <span class="m-handle"><img class="m-arrow" src="assets/arrow-right.svg" alt=""></span>
+        <span class="m-label">See future me</span>
+        <span class="m-chev"><span>›</span><span>›</span><span>›</span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ S7 · FUTURE ME ============ -->
+  <div class="screen" id="s7" data-screen-label="S7 Future Me">
+    <div class="topbar">
+      <div class="tb-back" onclick="go('s6')"><img class="tb-ic" src="assets/arrow-left.svg" alt=""></div>
+      <span class="tb-title">Future Me</span>
+    </div>
+    <div class="zone">
+      <div class="eyebrow">Based on your goal</div>
+      <h1 class="headline">This is you<br>in 3 months</h1>
+    </div>
+    <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:7">
+      <button class="m-btn" onclick="btnGo(this,'s8')">
+        <span class="m-handle"><img class="m-arrow" src="assets/arrow-right.svg" alt=""></span>
+        <span class="m-label">Choose dream outfit</span>
+        <span class="m-chev"><span>›</span><span>›</span><span>›</span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ S8 · CATALOGUE ============ -->
+  <div class="screen" id="s8" data-screen-label="S8 Catalogue">
+    <div class="topbar">
+      <div class="tb-back" onclick="go('s7')"><img class="tb-ic" src="assets/arrow-left.svg" alt=""></div>
+      <span class="tb-title">Dream Outfit</span>
+    </div>
+    <div class="zone">
+      <div class="eyebrow plain">Worn on your future body</div>
+      <div class="chips gap-s">
+        <div class="chip on" onclick="pickChip(this)">Lavarise</div>
+        <div class="chip" onclick="pickChip(this)">Alo Yoga</div>
+        <div class="chip" onclick="pickChip(this)">Nike</div>
+        <div class="chip" onclick="pickChip(this)">All</div>
+      </div>
+      <div class="cat-head">
+        <div class="cat-title"><div class="cat-coll" id="catColl">Soft sport</div><div class="cat-sub" id="catSub">Sport collection</div></div>
+        <div class="cat-nav">
+          <div class="cat-arrow" onclick="cycleColl(-1)"><img class="cat-ic" src="assets/arrow-left.svg" alt=""></div>
+          <div class="cat-arrow" onclick="cycleColl(1)"><img class="cat-ic" src="assets/arrow-right.svg" alt=""></div>
+        </div>
+      </div>
+      <div class="cards" id="catGrid"></div>
+    </div>
+  </div>
+
+  <!-- ============ S9 · TRY ON ============ -->
+  <div class="screen" id="s9" data-screen-label="S9 Try On">
+    <div class="topbar">
+      <div class="tb-back" onclick="go('s8')"><img class="tb-ic" src="assets/arrow-left.svg" alt=""></div>
+      <span class="tb-title" id="tryonTitle">Try On · Tanzania Mint</span>
+    </div>
+    <div class="zone zone-top">
+      <div class="eyebrow" id="tryonEyebrow">Tanzania mint</div>
+      <h1 class="headline">On your<br>future body</h1>
+    </div>
+    <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:7">
+      <button class="m-btn" onclick="btnGo(this,'s10')">
+        <span class="m-handle"><img class="m-arrow" src="assets/arrow-right.svg" alt=""></span>
+        <span class="m-label">Save to wishlist</span>
+        <span class="m-chev"><span>›</span><span>›</span><span>›</span></span>
+      </button>
+    </div>
+    <div class="goalbar">
+      <div class="goalbar-top"><span class="goalbar-k">Goal progress</span><span class="goalbar-v">0 / 5 kg · 3 months</span></div>
+      <div class="bar"><i style="width:2%"></i></div>
+    </div>
+  </div>
+
+  <!-- ============ S10 · WELCOME ============ -->
+  <div class="screen" id="s10" data-screen-label="S10 Welcome">
+    <div class="topbar">
+      <div class="tb-back" onclick="go('s9')"><img class="tb-ic" src="assets/arrow-left.svg" alt=""></div>
+      <span class="tb-title">Future Me</span>
+    </div>
+    <div class="zone rise">
+      <h1 class="headline">Your journey<br>starts today, Katya</h1>
+      <div class="stats gap-l">
+        <div class="stat"><div class="stat-num">90</div><div class="stat-lbl">Snaps in<br>3 months</div></div>
+        <div class="stat"><div class="stat-num">47</div><div class="stat-lbl">Days to<br>Aurora set</div></div>
+        <div class="stat"><div class="stat-num">−5</div><div class="stat-lbl">Kg to<br>your goal</div></div>
+      </div>
+      <p class="subline gap-m">In 3 months you'll have <strong>90 mornings of proof</strong>. The mirror remembers every one — even when you forget to.</p>
+    </div>
+    <div style="position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);z-index:7">
+      <button class="m-btn" onclick="btnGo(this,'s11')">
+        <span class="m-handle"><img class="m-arrow" src="assets/arrow-right.svg" alt=""></span>
+        <span class="m-label">Go to dashboard</span>
+        <span class="m-chev"><span>›</span><span>›</span><span>›</span></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ S11 · DASHBOARD ============ -->
+  <div class="screen" id="s11" data-screen-label="S11 Dashboard">
+    <div class="topbar">
+      <span class="tb-title">Dashboard · Day 1</span>
+      <div class="tb-icon" onclick="go('s1')"><svg width="34" height="34" viewBox="0 0 16 16" fill="none" stroke="rgba(255,255,255,0.78)" stroke-width="1.5" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg></div>
+    </div>
+    <div class="zone rise">
+      <div class="eyebrow">You are great</div>
+      <h1 class="headline">Welcome, Katya</h1>
+      <div class="dash-goal gap-l">
+        <div class="goalbar-top"><span class="goalbar-k">Goal progress</span><span class="goalbar-v">0 / 5 kg · 3 months</span></div>
+        <div class="bar"><i style="width:2%"></i></div>
+      </div>
+      <div class="tiles">
+        <div class="tile" onclick="go('s5')">
+          <span class="tile-k">Daily snap</span><span class="tile-v">Day 1</span><span class="tile-sub">Start streak</span>
+        </div>
+        <div class="tile" onclick="go('s7')">
+          <span class="tile-k">Future Me</span><span class="tile-v">3 mo</span><span class="tile-sub">See projection</span>
+        </div>
+        <div class="tile" onclick="go('s6')">
+          <span class="tile-k">Body map</span><span class="tile-v">61.4</span><span class="tile-sub">View report</span>
+        </div>
+        <div class="tile" onclick="go('s8')">
+          <span class="tile-k">Wishlist</span><span class="tile-v">1</span><span class="tile-sub">Aurora Set</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+<script src="mirror2.js?v=24"></script>
+</body>
+</html>
