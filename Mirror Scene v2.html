@@ -501,6 +501,11 @@ cal = loadCal();
 syncSliders();
 applyCalibration();
 switchVideo(SCREEN_VIDEOS.s1);
+
+// Переприменяем при изменении размера окна (resize, поворот телефона)
+window.addEventListener('resize', () => applyMirror());
+// Переприменяем после полной загрузки страницы
+window.addEventListener('load', () => applyMirror());
 </script>
 </body>
 </html>
