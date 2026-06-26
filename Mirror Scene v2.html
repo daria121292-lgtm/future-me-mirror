@@ -304,15 +304,14 @@ function applyMirror() {
     const sideGap  = Math.round((width - contentW) / 2);
     iframe.style.left = (sideGap - Math.round(MIRROR_X * scale)) + 'px';
   } else {
-    const sw = vw / BASE_W;
-    const sh = vh / BASE_H;
-    left   = Math.round(cal.left   * sw);
-    top    = Math.round(cal.top    * sh);
-    width  = Math.round(cal.width  * sw);
+    // Масштабируем всё по ширине — совпадает с object-fit:cover видео
+    const s = vw / BASE_W;
+    left   = Math.round(cal.left   * s);
+    top    = Math.round(cal.top    * s);
+    width  = Math.round(cal.width  * s);
     scale  = width / 1080;
-    // Высота не меньше контента (1080px iframe × scale), иначе низ обрезается на широких экранах
     const contentH = Math.round(1080 * scale);
-    height = Math.max(Math.round(cal.height * sh), contentH);
+    height = Math.max(Math.round(cal.height * s), contentH);
     iframe.style.left = '0';
   }
 
