@@ -289,17 +289,19 @@ function applyMirror() {
   let left, top, width, height, scale;
 
   if (isMobile) {
-    // Контент зеркала внутри айфрейма: 1080×2664 → scale 1080/2664 → width=438px, x=321
-    const PAD = 20;       // отступ от края экрана
-    const PAD_INNER = 36; // воздух вокруг контента зеркала внутри клипа
-    const MIRROR_W = Math.round(1080 * 1080 / 2664); // 438px — реальная ширина контента (1x)
-    const MIRROR_X = Math.round((1080 - MIRROR_W) / 2); // 321px — отступ контента в айфрейме
+    // 16px breathing room on all sides — clip fills screen minus PAD
+    const PAD = 16;
+    const MIRROR_W = Math.round(1080 * 1080 / 2664); // 438px — content width at 1x
+    const MIRROR_X = Math.round((1080 - MIRROR_W) / 2); // 321px — content offset in iframe
     scale  = (vh - 2 * PAD) / 1080;
     height = Math.round(1080 * scale);
-    width  = Math.round(MIRROR_W * scale) + 2 * PAD_INNER;
-    left   = Math.round((vw - width) / 2);
+    width  = vw - 2 * PAD;   // full screen width minus side padding
+    left   = PAD;
     top    = PAD;
-    iframe.style.left = (Math.round(-MIRROR_X * scale) + PAD_INNER) + 'px';
+    // center content within clip
+    const contentW = Math.round(MIRROR_W * scale);
+    const sideGap  = Math.round((width - contentW) / 2);
+    iframe.style.left = (sideGap - Math.round(MIRROR_X * scale)) + 'px';
   } else {
     const sw = vw / BASE_W;
     const sh = vh / BASE_H;
