@@ -289,15 +289,16 @@ function applyMirror() {
   let left, top, width, height, scale;
 
   if (isMobile) {
-    // 24px breathing room on all sides — clip fills screen minus PAD
-    const PAD = 24;
+    // 24px top/bottom, 40px left/right
+    const PAD_V = 24;
+    const PAD_H = 40;
     const MIRROR_W = Math.round(1080 * 1080 / 2664); // 438px — content width at 1x
     const MIRROR_X = Math.round((1080 - MIRROR_W) / 2); // 321px — content offset in iframe
-    scale  = (vh - 2 * PAD) / 1080;
+    scale  = (vh - 2 * PAD_V) / 1080;
     height = Math.round(1080 * scale);
-    width  = vw - 2 * PAD;   // full screen width minus side padding
-    left   = PAD;
-    top    = PAD;
+    width  = vw - 2 * PAD_H;
+    left   = PAD_H;
+    top    = PAD_V;
     // center content within clip
     const contentW = Math.round(MIRROR_W * scale);
     const sideGap  = Math.round((width - contentW) / 2);
