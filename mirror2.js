@@ -4,7 +4,7 @@
 function scaleMirror(){
   const m = document.querySelector('.mirror');
   if(!m) return;
-  const s = Math.min(window.innerWidth/1080, window.innerHeight/2664) * 1.32;
+  const s = Math.min(window.innerWidth/1080, window.innerHeight/2664);
   m.style.transform = 'scale('+s+')';
 }
 window.addEventListener('resize', scaleMirror);
