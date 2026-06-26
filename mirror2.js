@@ -5,9 +5,7 @@ function scaleMirror(){
   const m = document.querySelector('.mirror');
   if(!m) return;
   const s = Math.min(window.innerWidth/1080, window.innerHeight/2664) * 1.32;
-  // Сдвигаем зеркало вверх, чтобы контент начинался от верха, а не обрезался
-  const shift = 1332 - 540 / s;
-  m.style.transform = `scale(${s}) translateY(${shift}px)`;
+  m.style.transform = 'scale('+s+')';
 }
 window.addEventListener('resize', scaleMirror);
 scaleMirror();
