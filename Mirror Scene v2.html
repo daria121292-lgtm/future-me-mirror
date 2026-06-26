@@ -285,12 +285,12 @@ const BASE_H = 982;
 function applyMirror() {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
-  const isMobile = vw <= 900 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
   let left, top, width, height, scale;
 
   if (isMobile) {
-    // 16px breathing room on all sides — clip fills screen minus PAD
-    const PAD = 16;
+    // 24px breathing room on all sides — clip fills screen minus PAD
+    const PAD = 24;
     const MIRROR_W = Math.round(1080 * 1080 / 2664); // 438px — content width at 1x
     const MIRROR_X = Math.round((1080 - MIRROR_W) / 2); // 321px — content offset in iframe
     scale  = (vh - 2 * PAD) / 1080;
