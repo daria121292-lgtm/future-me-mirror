@@ -287,13 +287,13 @@ function applyMirror() {
   let left, top, width, height;
 
   if (isMobile) {
-    // На мобильном — масштабируем по высоте с отступами 16px
-    const PAD = 16;
-    const scale = (vh - PAD * 2) / 1080;
+    // На мобильном — масштабируем по высоте, отступ только сверху
+    const PAD_TOP = 20;
+    const scale = (vh - PAD_TOP) / 1080;
     width  = Math.round(1080 * scale);
-    height = Math.round(vh - PAD * 2);
+    height = Math.round(vh - PAD_TOP);
     left   = Math.round((vw - width) / 2);
-    top    = PAD;
+    top    = PAD_TOP;
   } else {
     const sw = vw / BASE_W;
     const sh = vh / BASE_H;
