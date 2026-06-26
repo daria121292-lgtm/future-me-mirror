@@ -5,7 +5,8 @@ function scaleMirror(){
   const m = document.querySelector('.mirror');
   if(!m) return;
   const s = Math.min(window.innerWidth/1080, window.innerHeight/2664) * 1.32;
-  m.style.transform = 'scale('+s+')';
+  // 323px компенсирует смещение вверх при 1.32x — топбар остаётся видимым
+  m.style.transform = 'scale('+s+') translateY(323px)';
 }
 window.addEventListener('resize', scaleMirror);
 scaleMirror();
