@@ -2,7 +2,6 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Future Me · Mirror Scene</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -44,7 +43,6 @@
     transition: left 0.4s ease, top 0.4s ease, width 0.4s ease, height 0.4s ease, border-radius 0.4s ease;
   }
   #mirrorClip iframe {
-    position:absolute;
     border:none;
     width:1080px;
     height:1080px;
@@ -119,16 +117,8 @@
 </head>
 <body>
 
-<video id="vid1" autoplay muted playsinline></video>
-<video id="vid2" muted playsinline></video>
-
-<!-- Tap-to-start overlay для мобильных -->
-<div id="tapOverlay" style="display:none;position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.7);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:16px;cursor:pointer;" onclick="startOnTap()">
-  <div style="width:70px;height:70px;border-radius:50%;border:2px solid rgba(235,197,126,0.8);display:flex;align-items:center;justify-content:center;">
-    <div style="width:0;height:0;border-style:solid;border-width:12px 0 12px 22px;border-color:transparent transparent transparent #EBC57E;margin-left:4px;"></div>
-  </div>
-  <p style="color:#EBC57E;font:300 14px/1.5 system-ui;letter-spacing:.1em;text-transform:uppercase;">Нажми чтобы начать</p>
-</div>
+<video id="vid1" autoplay muted loop playsinline></video>
+<video id="vid2" muted loop playsinline></video>
 <img id="bgPhoto" src="" alt="">
 <div id="dimmer"></div>
 
@@ -138,7 +128,7 @@
 
 <div id="screenIndicator"></div>
 
-<button id="calBtn" onclick="toggleCal()" style="display:none">⚙️ Калибровка</button>
+<button id="calBtn" onclick="toggleCal()">⚙️ Калибровка</button>
 
 <div id="cal">
   <h3>🎯 Калибровка</h3>
@@ -176,7 +166,7 @@
   </div>
 </div>
 
-<div id="hint" style="display:none">⚙️ Калибровка — правый верхний угол</div>
+<div id="hint">⚙️ Калибровка — правый верхний угол</div>
 
 <script>
 // ══════════════════════════════════════════════════════════════
@@ -240,7 +230,7 @@ let indicatorTimer = null;
 let locked = false;
 
 // ── calibration defaults ──────────────────────────────────────
-const MIRROR_DEFAULTS = { left:372, top:30, width:778, height:843, radius:50, dim:0.35 };
+const MIRROR_DEFAULTS = { left:300, top:50, width:480, height:850, radius:50, dim:0.35 };
 const VIDEO_DEFAULTS  = { vx:0, vy:0, vscale:100 };
 const DEFAULTS = { ...MIRROR_DEFAULTS, ...VIDEO_DEFAULTS };
 
@@ -277,44 +267,13 @@ function loadVideoCal(screenId) {
 }
 
 // ── apply calibration ─────────────────────────────────────────
-// Базовое разрешение на котором делалась калибровка (CSS px)
-const BASE_W = 1512;
-const BASE_H = 982;
-
 function applyMirror() {
-  const vw = window.innerWidth;
-  const vh = window.innerHeight;
-  const isMobile = vw <= 900 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  let left, top, width, height, scale;
-
-  if (isMobile) {
-    // Контент зеркала внутри айфрейма: 1080×2664 → scale 1080/2664 → width=438px, x=321
-    const PAD = 20;       // отступ от края экрана
-    const PAD_INNER = 36; // воздух вокруг контента зеркала внутри клипа
-    const MIRROR_W = Math.round(1080 * 1080 / 2664); // ~438px — реальная ширина контента
-    const MIRROR_X = Math.round((1080 - MIRROR_W) / 2); // ~321px — отступ контента в айфрейме
-    scale  = (vh - 2 * PAD) / 1080;
-    height = Math.round(1080 * scale);
-    width  = Math.round(MIRROR_W * scale) + 2 * PAD_INNER;
-    left   = Math.round((vw - width) / 2);
-    top    = PAD;
-    iframe.style.left = (Math.round(-MIRROR_X * scale) + PAD_INNER) + 'px';
-  } else {
-    const sw = vw / BASE_W;
-    const sh = vh / BASE_H;
-    left   = Math.round(cal.left   * sw);
-    top    = Math.round(cal.top    * sh);
-    width  = Math.round(cal.width  * sw);
-    height = Math.round(cal.height * sh);
-    scale  = width / 1080;
-    iframe.style.left = '0';
-  }
-
-  clip.style.left         = left   + 'px';
-  clip.style.top          = top    + 'px';
-  clip.style.width        = width  + 'px';
-  clip.style.height       = height + 'px';
-  clip.style.borderRadius = isMobile ? '0' : cal.radius + 'px';
+  const scale = cal.width / 1080;
+  clip.style.left         = cal.left   + 'px';
+  clip.style.top          = cal.top    + 'px';
+  clip.style.width        = cal.width  + 'px';
+  clip.style.height       = cal.height + 'px';
+  clip.style.borderRadius = cal.radius + 'px';
   iframe.style.transform  = `scale(${scale})`;
   dimmer.style.background = `rgba(0,0,0,${cal.dim})`;
 }
@@ -453,7 +412,7 @@ function switchVideo(src, timecode = 0) {
   }
   photo.style.opacity = '0';
   const a = activeVid, n = nextVid;
-  n.src = src; n.loop = false; n.muted = true; n.load();
+  n.src = src; n.loop = true; n.muted = true; n.load();
   n.style.opacity = '0';
   applyVideo();
   n.addEventListener('canplay', function onCanPlay() {
@@ -463,7 +422,7 @@ function switchVideo(src, timecode = 0) {
       applyVideo();
       n.style.opacity = '1';
       a.style.opacity = '0';
-      setTimeout(() => { a.pause(); a.src = ''; activeVid = n; nextVid = a; if(currentScreen) setupSegmentLoop(currentScreen); }, 900);
+      setTimeout(() => { a.pause(); a.src = ''; activeVid = n; nextVid = a; }, 900);
     }).catch(e => console.warn('video:', e));
   });
 }
@@ -497,8 +456,6 @@ function onScreenChange(screenId) {
     activeVid.currentTime = tc;
     if (activeVid.paused) activeVid.play().catch(()=>{});
   }
-  // Зацикливаем на отрезке текущего экрана
-  setupSegmentLoop(screenId);
 }
 
 // ── poll iframe ───────────────────────────────────────────────
@@ -517,70 +474,11 @@ iframe.addEventListener('load', () => {
   setInterval(pollScreen, 200);
 });
 
-// ── показать калибровку только для admin ──────────────────────
-if (new URLSearchParams(window.location.search).get('admin') === '1') {
-  document.getElementById('calBtn').style.display = '';
-}
-
 // ── init ──────────────────────────────────────────────────────
 cal = loadCal();
 syncSliders();
 applyCalibration();
 switchVideo(SCREEN_VIDEOS.s1);
-
-// ── segment looping — каждый экран зациклен на своём отрезке ──
-const SCREEN_KEYS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11'];
-
-function getSegment(screenId) {
-  const idx   = SCREEN_KEYS.indexOf(screenId);
-  const start = SCREEN_TIMECODES[screenId] ?? 0;
-  const next  = SCREEN_KEYS[idx + 1];
-  const end   = next ? (SCREEN_TIMECODES[next] - 0.1) : 9999;
-  return { start, end };
-}
-
-function setupSegmentLoop(screenId) {
-  const { start, end } = getSegment(screenId);
-  const onTime = () => {
-    if (activeVid._loopScreen !== screenId) {
-      activeVid.removeEventListener('timeupdate', onTime);
-      return;
-    }
-    if (activeVid.currentTime >= end) {
-      activeVid.currentTime = start;
-    }
-  };
-  activeVid._loopScreen = screenId;
-  activeVid.removeEventListener('timeupdate', activeVid._loopFn);
-  activeVid._loopFn = onTime;
-  activeVid.addEventListener('timeupdate', onTime);
-}
-
-// ── tap-to-start для iOS/Android ──────────────────────────────
-function startOnTap() {
-  const overlay = document.getElementById('tapOverlay');
-  overlay.style.display = 'none';
-  activeVid.play().catch(()=>{});
-}
-
-// Проверяем нужен ли overlay (мобильные браузеры)
-window.addEventListener('load', () => {
-  const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  if (isMobile) {
-    activeVid.play().catch(() => {
-      document.getElementById('tapOverlay').style.display = 'flex';
-    });
-  }
-});
-
-// Переприменяем при изменении размера окна и повороте телефона
-window.addEventListener('resize', () => applyMirror());
-window.addEventListener('orientationchange', () => setTimeout(applyMirror, 300));
-window.addEventListener('load', () => {
-  applyMirror();
-  setTimeout(applyMirror, 300);
-  setTimeout(applyMirror, 800);
-});
 </script>
 </body>
 </html>
