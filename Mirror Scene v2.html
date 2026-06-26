@@ -207,16 +207,31 @@ const SCREEN_VIDEOS = {
 // Таймкоды: в какую секунду перематывать при входе на экран
 const SCREEN_TIMECODES = {
   s1:  0,
-  s2:  7,
-  s3:  10,
-  s4:  14,
-  s5:  21,
-  s6:  25,
-  s7:  29,
-  s8:  34,
+  s2:  6,
+  s3:  9,
+  s4:  13,
+  s5:  17,
+  s6:  22,
+  s7:  27,
+  s8:  33,
   s9:  38,
+  s10: 42,
+  s11: 44,
+};
+
+// Конечные секунды для зацикливания каждого экрана
+const SCREEN_ENDCODES = {
+  s1:  5,
+  s2:  8,
+  s3:  12,
+  s4:  16,
+  s5:  21,
+  s6:  26,
+  s7:  32,
+  s8:  37,
+  s9:  41,
   s10: 43,
-  s11: 45,
+  s11: 48,
 };
 
 const SCREEN_LABELS = {
@@ -537,10 +552,8 @@ switchVideo(SCREEN_VIDEOS.s1);
 const SCREEN_KEYS = ['s1','s2','s3','s4','s5','s6','s7','s8','s9','s10','s11'];
 
 function getSegment(screenId) {
-  const idx   = SCREEN_KEYS.indexOf(screenId);
   const start = SCREEN_TIMECODES[screenId] ?? 0;
-  const next  = SCREEN_KEYS[idx + 1];
-  const end   = next ? (SCREEN_TIMECODES[next] - 0.1) : 9999;
+  const end   = SCREEN_ENDCODES[screenId] ?? 9999;
   return { start, end };
 }
 
