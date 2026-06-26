@@ -44,6 +44,7 @@
     transition: left 0.4s ease, top 0.4s ease, width 0.4s ease, height 0.4s ease, border-radius 0.4s ease;
   }
   #mirrorClip iframe {
+    position:absolute;
     border:none;
     width:1080px;
     height:1080px;
@@ -284,16 +285,19 @@ function applyMirror() {
   const vw = window.innerWidth;
   const vh = window.innerHeight;
   const isMobile = vw <= 900 || /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
-  let left, top, width, height;
+  let left, top, width, height, scale;
 
   if (isMobile) {
-    // На мобильном — масштабируем по высоте, отступ только сверху
-    const PAD_TOP = 20;
-    const scale = (vh - PAD_TOP) / 1080;
-    width  = Math.round(1080 * scale);
-    height = Math.round(vh - PAD_TOP);
+    // Контент зеркала внутри айфрейма: 1080×2664 → scale 1080/2664 → width=438px, x=321
+    const PAD = 18;
+    const MIRROR_W = Math.round(1080 * 1080 / 2664); // ~438px — реальная ширина контента
+    const MIRROR_X = Math.round((1080 - MIRROR_W) / 2); // ~321px — отступ контента в айфрейме
+    scale  = (vh - 2 * PAD) / 1080;
+    height = Math.round(1080 * scale);
+    width  = Math.round(MIRROR_W * scale);
     left   = Math.round((vw - width) / 2);
-    top    = PAD_TOP;
+    top    = PAD;
+    iframe.style.left = Math.round(-MIRROR_X * scale) + 'px';
   } else {
     const sw = vw / BASE_W;
     const sh = vh / BASE_H;
@@ -301,9 +305,10 @@ function applyMirror() {
     top    = Math.round(cal.top    * sh);
     width  = Math.round(cal.width  * sw);
     height = Math.round(cal.height * sh);
+    scale  = width / 1080;
+    iframe.style.left = '0';
   }
 
-  const scale = width / 1080;
   clip.style.left         = left   + 'px';
   clip.style.top          = top    + 'px';
   clip.style.width        = width  + 'px';
