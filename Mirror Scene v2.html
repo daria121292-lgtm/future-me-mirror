@@ -559,19 +559,25 @@ function getSegment(screenId) {
 
 function setupSegmentLoop(screenId) {
   const { start, end } = getSegment(screenId);
+  const vid = activeVid; // фиксируем элемент прямо сейчас
+
+  // снимаем старый луп с этого элемента
+  if (vid._loopFn) vid.removeEventListener('timeupdate', vid._loopFn);
+
   const onTime = () => {
-    if (activeVid._loopScreen !== screenId) {
-      activeVid.removeEventListener('timeupdate', onTime);
+    // снимаем себя если экран уже другой или видео сменилось
+    if (vid._loopScreen !== screenId) {
+      vid.removeEventListener('timeupdate', onTime);
       return;
     }
-    if (activeVid.currentTime >= end) {
-      activeVid.currentTime = start;
+    if (vid.currentTime >= end - 0.15) {
+      vid.currentTime = start;
     }
   };
-  activeVid._loopScreen = screenId;
-  activeVid.removeEventListener('timeupdate', activeVid._loopFn);
-  activeVid._loopFn = onTime;
-  activeVid.addEventListener('timeupdate', onTime);
+
+  vid._loopScreen = screenId;
+  vid._loopFn     = onTime;
+  vid.addEventListener('timeupdate', onTime);
 }
 
 // ── tap-to-start для iOS/Android ──────────────────────────────
