@@ -289,15 +289,16 @@ function applyMirror() {
 
   if (isMobile) {
     // Контент зеркала внутри айфрейма: 1080×2664 → scale 1080/2664 → width=438px, x=321
-    const PAD = 18;
+    const PAD = 20;       // отступ от края экрана
+    const PAD_INNER = 20; // воздух вокруг контента зеркала внутри клипа
     const MIRROR_W = Math.round(1080 * 1080 / 2664); // ~438px — реальная ширина контента
     const MIRROR_X = Math.round((1080 - MIRROR_W) / 2); // ~321px — отступ контента в айфрейме
     scale  = (vh - 2 * PAD) / 1080;
     height = Math.round(1080 * scale);
-    width  = Math.round(MIRROR_W * scale);
+    width  = Math.round(MIRROR_W * scale) + 2 * PAD_INNER;
     left   = Math.round((vw - width) / 2);
     top    = PAD;
-    iframe.style.left = Math.round(-MIRROR_X * scale) + 'px';
+    iframe.style.left = (Math.round(-MIRROR_X * scale) + PAD_INNER) + 'px';
   } else {
     const sw = vw / BASE_W;
     const sh = vh / BASE_H;
