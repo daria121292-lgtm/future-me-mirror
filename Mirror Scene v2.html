@@ -292,8 +292,8 @@ function applyMirror() {
     // Контент зеркала внутри айфрейма: 1080×2664 → scale 1080/2664 → width=438px, x=321
     const PAD = 20;       // отступ от края экрана
     const PAD_INNER = 36; // воздух вокруг контента зеркала внутри клипа
-    const MIRROR_W = Math.round(1080 * 1080 / 2664 * 1.32); // ~579px — реальная ширина контента (×1.32)
-    const MIRROR_X = Math.round((1080 - MIRROR_W) / 2); // ~288px — отступ контента в айфрейме
+    const MIRROR_W = Math.round(1080 * 1080 / 2664); // 438px — реальная ширина контента (1x)
+    const MIRROR_X = Math.round((1080 - MIRROR_W) / 2); // 321px — отступ контента в айфрейме
     scale  = (vh - 2 * PAD) / 1080;
     height = Math.round(1080 * scale);
     width  = Math.round(MIRROR_W * scale) + 2 * PAD_INNER;
@@ -306,8 +306,10 @@ function applyMirror() {
     left   = Math.round(cal.left   * sw);
     top    = Math.round(cal.top    * sh);
     width  = Math.round(cal.width  * sw);
-    height = Math.round(cal.height * sh);
     scale  = width / 1080;
+    // Высота не меньше контента (1080px iframe × scale), иначе низ обрезается на широких экранах
+    const contentH = Math.round(1080 * scale);
+    height = Math.max(Math.round(cal.height * sh), contentH);
     iframe.style.left = '0';
   }
 
